@@ -1,9 +1,28 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+
+house = House.find_or_create_by!(name: "Solar House Demo")
+
+consumer = Consumer.find_or_create_by!(
+  house: house,
+  name: "Apartment 1"
+)
+
+[
+  {
+    location_type: "market",
+    external_id: "1234567890"
+  },
+  {
+    location_type: "metering",
+    external_id: "DE0000000000000000000000000000000"
+  }
+].each do |attributes|
+  consumer.locations.find_or_create_by!(
+    location_type: attributes[:location_type]
+  ) do |location|
+    location.external_id = attributes[:external_id]
+  end
+end
+
+puts "Seeded #{House.count} house(s)"
+puts "Seeded #{Consumer.count} consumer(s)"
+puts "Seeded #{Location.count} location(s)"
