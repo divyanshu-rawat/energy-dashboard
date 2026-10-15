@@ -1,0 +1,114 @@
+
+<main class="container">
+  <p><%= link_to "← All houses", root_path %></p>
+
+  <h1><%= @house.name %></h1>
+  <p>Solar energy consumption overview</p>
+
+  <% if notice.present? %>
+    <p role="status"><%= notice %></p>
+  <% end %>
+
+  <% if alert.present? %>
+    <p role="alert"><%= alert %></p>
+  <% end %>
+
+  <section class="card">
+    <h2>Date range</h2>
+
+    <%= form_with url: house_path(@house), method: :get do %>
+      <div class="form-row">
+        <div>
+          <%= label_tag :from_date, "From" %>
+          <%= date_field_tag :from_date, @from_date, required: true %>
+        </div>
+
+        <div>
+          <%= label_tag :to_date, "To" %>
+          <%= date_field_tag :to_date, @to_date, required: true %>
+        </div>
+
+        <%= submit_tag "Apply filter" %>
+      </div>
+    <% end %>
+  </section>
+
+  <section class="stats-grid">
+    <div class="card">
+      <h2>Total solar consumption</h2>
+      <p class="stat">
+        <%= number_with_precision(@summary[:total], precision: 2) %>
+      </p>
+      <small>Measurement units</small>
+    </div>
+
+    <div class="card">
+      <h2>Average per day with data</h2>
+      <p class="stat">
+        <%= number_with_precision(@summary[:average_daily], precision: 2) %>
+      </p>
+      <small>
+        <%= @summary[:days_with_data] %> days with matched readings
+      </small>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Consuming units</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Consumer</th>
+          <th>Total solar</th>
+          <th>Daily average</th>
+          <th>Days with data</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @summary[:consumers].each do |summary| %>
+          <tr>
+            <td><%= summary[:consumer].name %></td>
+            <td>
+              <%= number_with_precision(summary[:total], precision: 2) %>
+            </td>
+            <td>
+              <%= number_with_precision(summary[:average_daily], precision: 2) %>
+            </td>
+            <td><%= summary[:days_with_data] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Import measurements</h2>
+
+    <p>
+      Fetch readings from the external API.
+      Existing measurement intervals are preserved.
+    </p>
+
+    <%= form_with url: import_house_path(@house), method: :post do %>
+      <div class="form-row">
+        <div>
+          <%= label_tag :begin_date, "Import from" %>
+          <%= date_field_tag :begin_date,
+                             @from_date,
+                             required: true %>
+        </div>
+
+        <%= submit_tag "Import measurements" %>
+      </div>
+    <% end %>
+  </section>
+
+  <p>
+    <small>
+      Consumption is calculated from matching MaLo and MeLo intervals.
+      Incomplete days may produce partial totals.
+    </small>
+  </p>
+</main>

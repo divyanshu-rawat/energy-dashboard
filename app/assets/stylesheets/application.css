@@ -8,3 +8,90 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+body {
+  margin: 0;
+  background: #f6f8fb;
+  color: #202d3a;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 1050px;
+  margin: 48px auto;
+  padding: 0 24px;
+}
+
+.card {
+  background: white;
+  border: 1px solid #e1e6ed;
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.stats-grid .card {
+  margin: 0;
+}
+
+.stat {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 8px 0;
+}
+
+.form-row {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.form-row div {
+  display: grid;
+  gap: 6px;
+}
+
+input,
+button {
+  font: inherit;
+  padding: 8px 12px;
+}
+
+input[type="submit"] {
+  background: #126b54;
+  color: white;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 12px;
+  border-bottom: 1px solid #e1e6ed;
+  text-align: left;
+}
+
+@media (max-width: 650px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+}

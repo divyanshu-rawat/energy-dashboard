@@ -11,4 +11,10 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  root "houses#index"
+
+  resources :houses, only: [:index, :show] do
+    post :import, on: :member, to: "house_imports#create"
+  end
 end

@@ -1,0 +1,21 @@
+
+<main class="container">
+  <h1>Solar Energy Dashboard</h1>
+  <p>Select a house to view its energy consumption.</p>
+
+  <% @houses.each do |house| %>
+    <section class="card">
+      <h2><%= house.name %></h2>
+
+      <p>
+        <%= pluralize(house.consumers.count, "consuming unit") %>
+      </p>
+
+      <%= link_to "View consumption", house_path(house) %>
+    </section>
+  <% end %>
+
+  <% if @houses.empty? %>
+    <p>No houses available. Run <code>bin/rails db:seed</code>.</p>
+  <% end %>
+</main>
