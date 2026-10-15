@@ -1,4 +1,3 @@
-
 module Measurements
   class Importer
     BATCH_SIZE = 1_000
@@ -19,18 +18,18 @@ module Measurements
         raise Error, "Consumer must have both market and metering locations"
       end
 
-      # Fetch both locations before persisting any data.
+      # Fetch and prepare both locations before writing.
       profiles = [market, metering].map do |location|
         readings = @api_client.fetch(
           location_id: location.external_id,
           begin_date: begin_date
         )
 
-        [location, build_rows(location, readings)]
+        build_rows(location, readings)
       end
 
       Measurement.transaction do
-        profiles.each do |_location, rows|
+        profiles.each do |rows|
           rows.each_slice(BATCH_SIZE) do |batch|
             Measurement.insert_all(
               batch,
@@ -41,8 +40,8 @@ module Measurements
         end
       end
 
-      # Number of readings processed, including skipped duplicates.
-      profiles.sum { |_location, rows| rows.size }
+      # Total readings processed, including skipped duplicates.
+      profiles.sum { |rows| rows.size }
     end
 
     private
@@ -56,9 +55,9 @@ module Measurements
         value = reading.fetch(:value)
 
         unless starts_at.is_a?(Time) &&
-              ends_at.is_a?(Time) &&
-              ends_at > starts_at &&
-              value.is_a?(BigDecimal)
+               ends_at.is_a?(Time) &&
+               ends_at > starts_at &&
+               value.is_a?(BigDecimal)
           raise Error, "Invalid measurement interval or value"
         end
 

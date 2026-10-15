@@ -5,14 +5,20 @@
   <h1><%= @house.name %></h1>
   <p>Solar energy consumption overview</p>
 
+  <%# Success and error messages %>
   <% if notice.present? %>
-    <p role="status"><%= notice %></p>
+    <div class="flash flash-success" role="status">
+      <%= notice %>
+    </div>
   <% end %>
 
   <% if alert.present? %>
-    <p role="alert"><%= alert %></p>
+    <div class="flash flash-error" role="alert">
+      <%= alert %>
+    </div>
   <% end %>
 
+  <%# Date range filter %>
   <section class="card">
     <h2>Date range</h2>
 
@@ -33,26 +39,53 @@
     <% end %>
   </section>
 
+  <%# Empty state: show message but keep the dashboard visible %>
+  <% if @summary[:days_with_data].zero? %>
+    <section class="card">
+      <h2>No consumption data available</h2>
+      <p>
+        There are no matching market and metering
+        measurements for the selected date range.
+      </p>
+      <p>
+        Choose a different date range or import measurements below.
+      </p>
+    </section>
+  <% end %>
+
+  <%# House-level statistics %>
   <section class="stats-grid">
     <div class="card">
       <h2>Total solar consumption</h2>
+
       <p class="stat">
-        <%= number_with_precision(@summary[:total], precision: 2) %>
+        <%= number_with_precision(
+              @summary[:total],
+              precision: 2
+            ) %>
       </p>
+
       <small>Measurement units</small>
     </div>
 
     <div class="card">
       <h2>Average per day with data</h2>
+
       <p class="stat">
-        <%= number_with_precision(@summary[:average_daily], precision: 2) %>
+        <%= number_with_precision(
+              @summary[:average_daily],
+              precision: 2
+            ) %>
       </p>
+
       <small>
-        <%= @summary[:days_with_data] %> days with matched readings
+        <%= @summary[:days_with_data] %>
+        days with matched readings
       </small>
     </div>
   </section>
 
+  <%# Consumer-level statistics %>
   <section class="card">
     <h2>Consuming units</h2>
 
@@ -70,12 +103,21 @@
         <% @summary[:consumers].each do |summary| %>
           <tr>
             <td><%= summary[:consumer].name %></td>
+
             <td>
-              <%= number_with_precision(summary[:total], precision: 2) %>
+              <%= number_with_precision(
+                    summary[:total],
+                    precision: 2
+                  ) %>
             </td>
+
             <td>
-              <%= number_with_precision(summary[:average_daily], precision: 2) %>
+              <%= number_with_precision(
+                    summary[:average_daily],
+                    precision: 2
+                  ) %>
             </td>
+
             <td><%= summary[:days_with_data] %></td>
           </tr>
         <% end %>
@@ -83,6 +125,7 @@
     </table>
   </section>
 
+  <%# Manual import action %>
   <section class="card">
     <h2>Import measurements</h2>
 
@@ -95,9 +138,12 @@
       <div class="form-row">
         <div>
           <%= label_tag :begin_date, "Import from" %>
-          <%= date_field_tag :begin_date,
-                             @from_date,
-                             required: true %>
+
+          <%= date_field_tag(
+                :begin_date,
+                @from_date,
+                required: true
+              ) %>
         </div>
 
         <%= submit_tag "Import measurements" %>
@@ -105,9 +151,15 @@
     <% end %>
   </section>
 
+  <%# Calculation assumptions %>
   <p>
     <small>
-      Consumption is calculated from matching MaLo and MeLo intervals.
+      Solar consumption is calculated from matching
+      MaLo and MeLo measurement intervals.
+
+      Average daily consumption is calculated across
+      days with matched readings.
+
       Incomplete days may produce partial totals.
     </small>
   </p>

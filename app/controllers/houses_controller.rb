@@ -17,13 +17,16 @@ class HousesController < ApplicationController
       from_date: @from_date,
       to_date: @to_date
     )
+
   rescue ArgumentError => e
-    redirect_to house_path(@house), alert: e.message
+    redirect_to house_path(@house),
+      alert: e.message,
+      status: :see_other
   end
 
   private
 
-  def parse_date(value, default)
-    value.present? ? Date.iso8601(value) : default
-  end
+    def parse_date(value, default)
+      value.present? ? Date.iso8601(value) : default
+    end
 end

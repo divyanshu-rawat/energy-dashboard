@@ -45,6 +45,34 @@ RSpec.describe "House dashboard", type: :request do
 
       expect(response).to redirect_to(house_path(house))
     end
+
+    it "shows an error for a reversed date range" do
+      get house_path(house),
+          params: {
+            from_date: "2026-10-15",
+            to_date: "2026-06-04"
+          }
+
+      expect(response).to redirect_to(house_path(house))
+
+      follow_redirect!
+
+      expect(response.body).to include("Invalid date range")
+    end
+
+    it "shows an empty state when no measurements exist" do
+      get house_path(house),
+          params: {
+            from_date: "2026-06-04",
+            to_date: "2026-06-05"
+          }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(
+        "No consumption data available"
+      )
+    end
+
   end
 
   describe "POST /houses/:id/import" do

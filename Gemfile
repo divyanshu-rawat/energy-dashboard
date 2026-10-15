@@ -64,3 +64,7 @@ end
 gem "rspec-rails", "~> 8.0", groups: [:development, :test]
 
 gem "webmock", "~> 3.30", group: :test
+
+gem "dotenv-rails", "~> 3.2", groups: [:development, :test]
+
+gem "rubocop", "~> 1.92", group: :development

@@ -95,3 +95,22 @@ td {
     overflow-x: auto;
   }
 }
+
+.flash {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 16px 0;
+  font-weight: 500;
+}
+
+.flash-success {
+  background: #e8f5ee;
+  color: #176b45;
+  border: 1px solid #b8dfc8;
+}
+
+.flash-error {
+  background: #fff0ee;
+  color: #a12d25;
+  border: 1px solid #f1b8b1;
+}
