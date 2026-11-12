@@ -61,7 +61,7 @@ group :development do
   gem "web-console"
 end
 
-gem "rspec-rails", "~> 8.0", groups: [:development, :test]
+gem "rspec-rails", "~> 8.1", groups: [:development, :test]
 
 gem "webmock", "~> 3.30", group: :test
 
